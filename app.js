@@ -1,5 +1,6 @@
 const canvas = document.getElementById("jsCanvas");
 const ctx = canvas.getContext("2d");  //이 안에서 픽셀들을 컨트롤 한다.
+const colors = document.getElementsByClassName("jsColor");
 
 canvas.width = 700;  //픽셀 modifier에 사이즈를 준다.
 canvas.height = 700;
@@ -31,10 +32,16 @@ function onMouseMove(event) {
       
   }
 
-function onMouseDown(event) {
+/*function onMouseDown(event) {
     painting = true;
-}
+}*/
 
+function handleColorClick(event) {
+  //console.log(event.target.style);
+  const color = event.target.style.backgroundColor;
+  //console.log(color);
+  ctx.strokeStyle = color;
+}
 
 
 if(canvas){ //캔버스가 있는지 없는지 체크
@@ -43,3 +50,7 @@ if(canvas){ //캔버스가 있는지 없는지 체크
     canvas.addEventListener("mouseup", stopPainting);
     canvas.addEventListener("mouseleave", stopPainting);
 }
+
+//console.log(Array.from(colors)); //array.from 메소드는 object로 부터 array를 만든다.
+Array.from(colors).forEach(color => color.addEventListener("click", handleColorClick)); //어레이를 주면 그 어레이 안에서 forEach로 color를 가질수있다.
+//이안에 color를 potato로 바꿔도 된다. 이건 그냥 그 array 안에 있는 각각의 아이템들을 대표하는것뿐)
