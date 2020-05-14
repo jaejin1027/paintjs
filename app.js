@@ -3,11 +3,19 @@ const ctx = canvas.getContext("2d");  //이 안에서 픽셀들을 컨트롤 한
 const colors = document.getElementsByClassName("jsColor");
 const range = document.getElementById("jsRange");
 const mode = document.getElementById("jsMode");
+const saveBtn = document.getElementById("jsSave");
 
-canvas.width = 700;  //픽셀 modifier에 사이즈를 준다.
-canvas.height = 700;
+const INITIAL_COLOR = "#2c2c2c";
+const CANVAS_SIZE = 700;
 
-ctx.strokeStyle = "#2c2c2c"; //우리가 그릴 선(이context안에 있는 모든선)들이 모두 이 색을 갖는다.
+canvas.width = CANVAS_SIZE;  //픽셀 modifier에 사이즈를 준다.
+canvas.height = CANVAS_SIZE;
+
+
+ctx.fillStyle = "white";
+ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+ctx.strokeStyle = INITIAL_COLOR; //우리가 그릴 선(이context안에 있는 모든선)들이 모두 이 색을 갖는다.
+ctx.fillStyle = INITIAL_COLOR;
 ctx.lineWidth = 2.5;  // 그 선의 너비가 2.5px
 
 
@@ -44,6 +52,7 @@ function handleColorClick(event) {
   const color = event.target.style.backgroundColor;
   //console.log(color);
   ctx.strokeStyle = color;
+  ctx.fillStyle = color;
 }
 
 function handleRangeChange(event) {
@@ -66,12 +75,33 @@ function handleModeClick() { //현재가 필링모드인지 아닌지 알수 있
   }
 }
 
+function handleCanvasClick(){
+  if(filling){
+    ctx.fillRect(0, 0, CANVAS_SIZE, CANVAS_SIZE);
+  }
+}
+
+function handleCM(event){
+  //console.log(event);
+  event.preventDefault(); //우클릭 방지
+}
+
+function handleSaveClick(){
+  const image = canvas.toDataURL("image/jpeg"); //toDataURL: type parameter에 의해 지정된 포맷의 이미지표현을 포함한 data uri를 반환.
+  //console.log(image);
+  const link = document.createElement("a");
+  link.href = image;
+  link.download = "mypainting[🎨]";
+  link.click();
+} 
 
 if(canvas){ //캔버스가 있는지 없는지 체크
     canvas.addEventListener("mousemove", onMouseMove);
     canvas.addEventListener("mousedown", startPainting);
     canvas.addEventListener("mouseup", stopPainting);
     canvas.addEventListener("mouseleave", stopPainting);
+    canvas.addEventListener("click", handleCanvasClick);
+    canvas.addEventListener("contextmenu", handleCM); //우클릭
 }
 
 //console.log(Array.from(colors)); //array.from 메소드는 object로 부터 array를 만든다.
@@ -84,4 +114,8 @@ if(range){
 
 if(mode){
   mode.addEventListener("click", handleModeClick);
+}
+
+if(saveBtn){
+  saveBtn.addEventListener("click", handleSaveClick);
 }
